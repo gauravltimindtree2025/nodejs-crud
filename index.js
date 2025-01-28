@@ -3,7 +3,8 @@ const http = require('http');
 const userObject = require("./routes/user.js");
 const app = express();
 
-const PORT = 8080
+const PORT = 8080;
+
 
 app.get("/", (req,res) => {
     return res.send("using express sending response of request");
