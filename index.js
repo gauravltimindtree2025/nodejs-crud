@@ -4,39 +4,30 @@ const userObject = require("./routes/user.js");
 const app = express();
 var bodyParser = require('body-parser');
 
-// configure the app to use bodyParser()
-// app.use(bodyParser.urlencoded({
-//     extended: true
-// }));
-
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
+app.use(bodyParser.urlencoded({extended: true}));
 
 const PORT = 8080;
-
 
 app.get("/", (req,res) => {
     return res.send("using express sending response of request");
 });
 
 app.get("/users", (req,res) => {
-    userObject.userList().then(result => { return res.send(result); })
+    userObject.GetUsers().then(result => { return res.send(JSON.stringify(result, null, 2)); });
 });
 
-const users = [];
-
 app.post('/users', (req, res) => {
-    const user = req.body;
-    // console.log("user details :")
-    // console.log("First Name :" , user.FirstName);
-    // console.log("Last Name :" , user.LastName);
-    // console.log("Email Address :" , user.EmailAddress);
-    // console.log("Age :" , user.Age);
-    //res.send(user);
-    userObject.addUser(user).then(result => { res.send(`${user.FirstName} has been added to the Database`); });
-})
+    userObject.AddUser(req.body).then(_ => { res.send(`${req.body.FirstName} has been added to the Database`); });
+});
+
+app.get('/users/:id', (req,res) => {
+    userObject.GetUser(req.params.id).then(result => {res.send(JSON.stringify(result, null, 2));});
+});
+
+app.delete('/users/:id', (req,res) => {
+    userObject.DeleteUser(req.params.id).then(_ => { res.send(`${req.params.id} has been deleted from the Database`); });
+});
 
 let myserver = http.createServer(app);
  myserver.listen(PORT);
